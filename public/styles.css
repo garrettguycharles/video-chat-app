@@ -1,0 +1,302 @@
+:root {
+  --header-height: calc(var(--square-button-width) + var(--padding-thick) + var(--padding-thin));
+
+  --square-button-width: 2.5rem;
+
+  --padding-tiny: 0.25rem;
+  --padding-thin: 0.5rem;
+  --padding-medium: 1rem;
+  --padding-thick: 2rem;
+
+  --border-radius: 10px;
+  --border-radius-small: 5px;
+  --border-radius-styled: 5px 10px;
+
+  --color-dark-3: #000e1a;
+  --color-dark-2: #00294d;
+  --color-dark-1: #004480;
+  --color-dark-gray: #555555;
+  --color-gray: #777777;
+  --color-light-gray: #ebebeb;
+  --color-primary: #32a6ff;
+
+  --color-red: #ff4a32;
+  --color-red-dark: #991200;
+
+  --chat-width: max(25vw, 200px);
+
+  --font-family-headings: 'Montserrat', sans-serif;
+  --font-family-main: 'Open Sans', sans-serif;
+
+  --font-size-chat: 0.7rem;
+
+
+}
+
+html * {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+input {
+  height: var(--square-button-width);
+  width: 100%;
+  border-radius: var(--border-radius-styled);
+  outline: none;
+  border: none;
+  padding: var(--padding-thin);
+}
+
+label {
+  margin-right: var(--padding-thin);
+}
+
+video {
+  border-radius: var(--border-radius-small);
+  width: 25%;
+  object-fit: cover;
+  margin: var(--padding-medium);
+  display: table-cell;
+}
+
+.name-prompt-form {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: var(--padding-thick);
+  border-radius: var(--border-radius-small);
+  background-color: white;
+  box-shadow: 0 0 0 100vh #ffffffaa;
+  background-color: var(--color-dark-1);
+  color: white;
+}
+
+.v-app {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template: var(--header-height) 1fr var(--header-height) / 1fr var(--chat-width);
+  width: 100%;
+  background-color: var(--color-dark-3);
+  font-family: var(--font-family-main);
+}
+
+
+.header {
+  grid-area: 1 / 1 / span 1 / span 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-dark-2);
+  color: white;
+  font-family: var(--font-family-headings);
+}
+
+.video-group {
+  grid-area: 2 / 1 / span 1 / span 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-grid {
+  width: 75vw;
+  height: calc(100vh - var(--header-height) * 2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.options {
+  grid-area: 3 / 1 / span 1 / span 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-dark-2);
+  color: white;
+  padding: var(--padding-medium);
+  font-family: var(--font-family-headings);
+}
+
+.options-left {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options-button {
+  background-color: var(--color-primary);
+  padding: var(--padding-thin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-styled);
+  margin-left: var(--padding-thin);
+  margin: var(--padding-thin);
+  height: var(--square-button-width);
+  width: var(--square-button-width);
+  cursor: pointer;
+}
+
+.muted {
+  background-color: var(--color-red-dark);
+}
+
+.faded-button {
+  background-color: white;
+  color: var(--color-primary);
+}
+
+.main-chat-window {
+  grid-area: 2 / 2 / span 1 / span 1;
+  background-color: var(--color-dark-1);
+  color: white;
+  padding: var(--padding-thin);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.main-message-container {
+  grid-area: 3 / 2 / span 1 / span 1;
+  background-color: var(--color-dark-1);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: var(--padding-medium);
+}
+
+.messages {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: var(--border-radius-small);
+  overflow-y: auto;
+}
+
+.chat-message {
+  width: max-content;
+  padding: var(--padding-thin);
+  margin-top: var(--padding-thin);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-chat);
+  background-color: white;
+  color: black;
+  position: relative;
+  border-radius: 1rem 1rem 1rem 2px;
+}
+
+.chat-message-time {
+  font-size: 0.5rem;
+  margin: 0 0.5rem;
+  align-self: flex-start;
+  padding: 0;
+  color: var(--color-dark-gray);
+}
+
+.chat-message-name {
+  font-size: 0.6rem;
+  align-self: flex-start;
+  padding: 0;
+  margin: 0 0.5rem;
+  text-transform: capitalize;
+  width: max-content;
+  color: var(--color-dark-1);
+}
+
+.chat-message-text {
+  width: max-content;
+  max-width: 80%;
+  padding: 0.5rem;
+  text-align: left;
+  background-color: #ebebeb;
+  border-radius: 1rem 1rem 1rem 2px;
+  align-self: flex-start;
+}
+
+.chat-message.from-self {
+  align-self: flex-end;
+}
+
+.chat-message.from-self > .chat-message-text {
+  border-radius: 1rem 1rem 2px 1rem;
+  color: white;
+  background-color: var(--color-dark-1);
+  align-self: flex-end;
+}
+
+.chat-message.from-self > .chat-message-name {
+  align-self: flex-end;
+}
+
+.chat-message.from-self > .chat-message-time {
+  align-self: flex-end;
+}
+
+
+
+.toast-container {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.toast-conatiner * {
+  pointer-events: none;
+}
+
+.toast {
+  max-width: 100%;
+  padding: 0.5rem;
+  margin: 1rem;
+  border: 2px solid #ebebeb;
+  background-color: #ffffffcc;
+  color: black;
+  font-family: 'Montserrat' !important;
+  border-radius: var(--border-radius-small);
+  text-align: center;
+  font-weight: bold;
+  font-size: 2vh;
+  border-radius: 100px;
+  transition-duration: 0.7s;
+  filter: opacity(0);
+  z-index: 50;
+}
+
+.show-toast {
+  filter: opacity(1);
+}
+
+.error {
+  color: white;
+  background-color: #ff0000aa;
+}
