@@ -194,6 +194,9 @@ let app = new Vue({
     },
     addVideoStream: function(video, stream, userId) {
       video.srcObject = stream;
+      video.controls = false;
+      video.playsInline = true;
+      video.autoplay = true;
       video.addEventListener("loadedmetadata", () => {
         video.play();
 
