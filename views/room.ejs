@@ -36,7 +36,11 @@
         </div>
       </div>
 
-      <div class="end-screen" v-if="room_ended">You have left the meeting. <br /> Feel free to close this tab.</div>
+      <div class="popup-wrapper" v-if="room_ended" @click="(e) => {e.stopPropagation();">
+        <div class="end-screen">
+          You have left the meeting. <br /> Feel free to close this tab.
+        </div>
+      </div>
 
       <div class="header">
         <div class="logo">

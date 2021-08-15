@@ -64,18 +64,19 @@ let app = new Vue({
         'sync disconnect on unload': true,
       });
 
-/*    // server code
+        // server code
       this.peer = new Peer(undefined, {
         path: "/peerjs",
         host: "/",
       });
-*/
+
+/*      // development code
       this.peer = new Peer(undefined, {
         path: "/peerjs",
         host: "/",
         port: 3007,
       });
-
+*/
       navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -232,6 +233,7 @@ let app = new Vue({
     },
     leaveMeeting: function() {
       console.log("Leave meeting button pushed!");
+      this.show_exit_confirmation = false;
       this.socket.emit("leave-meeting");
     },
     setToast: function(text, duration=5000) {

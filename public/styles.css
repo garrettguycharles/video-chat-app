@@ -83,6 +83,10 @@ input {
   padding: var(--padding-thin);
 }
 
+#chat_message {
+  width: 100%;
+}
+
 .label {
   margin-right: var(--padding-thin);
   width: max-content;
@@ -194,8 +198,6 @@ video:first-child:nth-last-child(6) ~ video {
   transform: translate(-50%, -50%);
   padding: var(--padding-thick);
   border-radius: var(--border-radius-small);
-  background-color: white;
-  box-shadow: 0 0 0 100vh #ffffffaa;
   background-color: var(--color-dark-1);
   color: white;
 }
