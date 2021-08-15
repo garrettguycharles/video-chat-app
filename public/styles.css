@@ -437,6 +437,16 @@ video:first-child:nth-last-child(6) ~ video {
   background-color: #ff0000aa;
 }
 
+.chat-fill {
+  height: 100%;
+  width: 100%;
+  color: var(--color-light-gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
 
 @media only screen and (max-width: 600px) {
   :root {
@@ -450,9 +460,13 @@ video:first-child:nth-last-child(6) ~ video {
   }
 
   #v-app {
-    grid-template: var(--header-height) 1fr 1fr var(--header-height) var(--header-height) / 1fr;
+    grid-template: var(--header-height) 1fr var(--header-height) 1fr var(--header-height) / 1fr;
     max-width: 100vw;
     max-height: 100vh;
+  }
+
+  #chat_message {
+    margin-left: var(--padding-thin);
   }
 
   .header {
@@ -472,22 +486,23 @@ video:first-child:nth-last-child(6) ~ video {
     height: calc((100vh - var(--header-height) * 3) * 2 / 3);
   }
 
-  .main-chat-window {
-    grid-area: 3 / 1 / span 1 / span 1;
-  }
-
   .messages {
     width: 100%;
     height: calc((100vh - var(--header-height) * 3) / 3 - var(--padding-medium));
   }
 
-  .main-message-container {
+  .options {
+    grid-area: 3 / 1 / span 1 / span 1;
+    padding: var(--padding-medium) 0;
+  }
+
+  .main-chat-window {
     grid-area: 4 / 1 / span 1 / span 1;
   }
 
-  .options {
+  .main-message-container {
     grid-area: 5 / 1 / span 1 / span 1;
-    padding: var(--padding-medium) 0;
+    padding: var(--padding-thin) 0;
   }
 
   .toast-container {

@@ -64,7 +64,7 @@ let app = new Vue({
         'sync disconnect on unload': true,
       });
 
-        // server code
+      // server code
       this.peer = new Peer(undefined, {
         path: "/peerjs",
         host: "/",
