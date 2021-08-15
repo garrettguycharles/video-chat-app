@@ -18,11 +18,25 @@
   <body>
     <div id="v-app" class="v-app">
 
-      <form class="name-prompt-form" v-if="!socket && !peer" @submit.prevent="joinRoom()">
-        <label for="">Your name:</label>
-        <input type="text" v-model="name" placeholder="Your name here...">
-        <div class="options-button" @click="joinRoom()">JOIN</div>
-      </form>
+      <div class="popup-wrapper" v-if="!socket && !peer" @click="(e) => {e.stopPropagation();}">
+        <form class="name-prompt-form" @submit.prevent="joinRoom()">
+          <span class="label" for="">Name:</span>
+          <input type="text" v-model="name" placeholder="Your name here...">
+          <div class="options-button fit-width-button" @click="joinRoom()">JOIN</div>
+        </form>
+      </div>
+
+      <div class="popup-wrapper" v-if="show_exit_confirmation" @click="show_exit_confirmation = false">
+        <div id="exit-confirmation" @click="(e) => {e.stopPropagation();}">
+          <h3>Leave the meeting?</h3>
+          <div class="options-wrapper">
+            <div class="options-button fit-width-button" @click="show_exit_confirmation = false">BACK</div>
+            <div class="options-button muted fit-width-button" @click="leaveMeeting()">LEAVE</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="end-screen" v-if="room_ended">You have left the meeting. <br /> Feel free to close this tab.</div>
 
       <div class="header">
         <div class="logo">
@@ -48,15 +62,16 @@
         </div>
 
         <div class="options-right">
-          <div id="invite_button" class="options-button">
-            <i class="fas fa-user-plus"></i>
+          <div id="refresh_button" class="options-button" @click="requestSync()">
+            <i class="fas fa-sync-alt"></i>
           </div>
+          <div class="options-button muted fit-width-button" @click="show_exit_confirmation = true">Leave</div>
         </div>
 
       </div>
 
       <div class="main-chat-window">
-        <div class="messages">
+        <div class="messages" ref="messages">
           <div :class="{'chat-message':true, 'from-self':message.userId === userId}" v-for="message in chat.messages" :key="message.name + message.time.toString()">
             <span class="chat-message-name">
               {{ message.name }}

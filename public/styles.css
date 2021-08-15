@@ -50,28 +50,142 @@ body {
   justify-content: flex-start;
 }
 
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-light-gray) #bbbbbb;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-light-gray);
+  border-radius: var(--border-radius-small);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #bbbbbb;
+  border-radius: 20px;
+  border: 3px solid #ebebeb;
+  background-clip: padding-box;
+}
+
 input {
   height: var(--square-button-width);
-  width: 100%;
+  width: 30vw;
+  min-width: 4rem;
   border-radius: var(--border-radius-styled);
   outline: none;
   border: none;
   padding: var(--padding-thin);
 }
 
-label {
+.label {
   margin-right: var(--padding-thin);
+  width: max-content;
 }
 
 video {
   border-radius: var(--border-radius-small);
-  width: 25%;
+  width: auto;
   object-fit: cover;
-  margin: var(--padding-medium);
+  margin: var(--padding-thin);
   display: table-cell;
 }
 
+/* all of the following numbers
+will seem like they are one smaller
+than they should be.  This is because
+the true first child of the video container
+is the user's own video, which has
+its own styles in #my-video */
+
+/* one items */
+video:first-child:nth-last-child(2),
+video:first-child:nth-last-child(2) ~ video {
+  width: 90%;
+  height: 90%;
+}
+/* two items */
+video:first-child:nth-last-child(3),
+video:first-child:nth-last-child(3) ~ video {
+  width: 40%;
+  height: 40%;
+}
+/* three items */
+video:first-child:nth-last-child(4),
+video:first-child:nth-last-child(4) ~ video {
+  width: 40%;
+  height: 40%;
+}
+/* four items */
+video:first-child:nth-last-child(5),
+video:first-child:nth-last-child(5) ~ video {
+  width: 40%;
+  height: 40%;
+}
+/* five items */
+video:first-child:nth-last-child(6),
+video:first-child:nth-last-child(6) ~ video {
+  width: 30%;
+  height: 30%;
+}
+
 .name-prompt-form {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: var(--padding-thick);
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-dark-1);
+  color: white;
+  z-index: 999;
+}
+
+.popup-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 10vw;
+  background-color: #ffffffbb;
+  z-index: 999;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+#exit-confirmation {
+  border-radius: var(--border-radius-small);
+  background-color: var(--color-dark-1);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-thick);
+  font-weight: bold;
+}
+
+.v-app {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template: var(--header-height) 1fr var(--header-height) / 1fr var(--chat-width);
+  width: 100%;
+  background-color: var(--color-dark-3);
+  font-family: var(--font-family-main);
+}
+
+.end-screen {
+  z-index: 50;
   display: flex;
   align-items: center;
   position: fixed;
@@ -86,16 +200,16 @@ video {
   color: white;
 }
 
-.v-app {
-  width: 100%;
-  height: 100vh;
-  display: grid;
-  grid-template: var(--header-height) 1fr var(--header-height) / 1fr var(--chat-width);
-  width: 100%;
-  background-color: var(--color-dark-3);
-  font-family: var(--font-family-main);
+#my-video {
+  width: 17%;
+  min-width: 150px;
+  height: auto;
+  margin: var(--padding-thin);
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  bottom: 0;
 }
-
 
 .header {
   grid-area: 1 / 1 / span 1 / span 2;
@@ -121,7 +235,9 @@ video {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  align-content: center;
   justify-content: center;
+  position: relative;
 }
 
 .options {
@@ -135,8 +251,21 @@ video {
   font-family: var(--font-family-headings);
 }
 
+.options-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
 .options-left {
   margin-right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options-right {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,6 +287,10 @@ video {
 
 .muted {
   background-color: var(--color-red-dark);
+}
+
+.fit-width-button {
+  width: max-content;
 }
 
 .faded-button {
@@ -187,10 +320,11 @@ video {
 
 .messages {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - var(--header-height) * 2 - var(--padding-medium));
   background-color: white;
   border-radius: var(--border-radius-small);
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat-message {
@@ -228,7 +362,6 @@ video {
 }
 
 .chat-message-text {
-  width: max-content;
   max-width: 80%;
   padding: 0.5rem;
   text-align: left;
@@ -268,6 +401,7 @@ video {
   align-items: center;
   justify-content: flex-end;
   pointer-events: none;
+  z-index: 1000;
 }
 
 .toast-conatiner * {
@@ -299,4 +433,64 @@ video {
 .error {
   color: white;
   background-color: #ff0000aa;
+}
+
+
+@media only screen and (max-width: 600px) {
+  :root {
+    --header-height: calc(var(--square-button-width) + var(--padding-medium));
+    --square-button-width: 2rem;
+  }
+
+
+  #my-video {
+    min-width: 100px;
+  }
+
+  #v-app {
+    grid-template: var(--header-height) 1fr 1fr var(--header-height) var(--header-height) / 1fr;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+
+  .header {
+    grid-area: 1 / 1 / span 1 / span 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-group {
+    grid-area: 2 / 1 / span 1 / span 1;
+  }
+
+  .video-grid {
+    width: 100%;
+    height: calc((100vh - var(--header-height) * 3) * 2 / 3);
+  }
+
+  .main-chat-window {
+    grid-area: 3 / 1 / span 1 / span 1;
+  }
+
+  .messages {
+    width: 100%;
+    height: calc((100vh - var(--header-height) * 3) / 3 - var(--padding-medium));
+  }
+
+  .main-message-container {
+    grid-area: 4 / 1 / span 1 / span 1;
+  }
+
+  .options {
+    grid-area: 5 / 1 / span 1 / span 1;
+    padding: var(--padding-medium) 0;
+  }
+
+  .toast-container {
+    width: 100%;
+    bottom: var(--header-height);
+  }
+
 }

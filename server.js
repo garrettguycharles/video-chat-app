@@ -40,6 +40,14 @@ class User {
       room_owner: this.room_owner,
     }
   }
+
+  destroy() {
+    this.socket.emit("room_destroy");
+    this.socket.leave(this.room.roomId);
+    this.socket.removeAllListeners();
+    this.socket.disconnect(true);
+    this.room.removeUser(this);
+  }
 }
 
 class ChatMessage {
@@ -72,7 +80,7 @@ class Room {
       messages: [],
     };
 
-    this.users = [];
+    this.users = {};
 
     rooms[this.roomId] = this;
   }
@@ -84,9 +92,29 @@ class Room {
   }
 
   addUser(u) {
-    if (!(this.users.includes(u))) {
-      this.users.push(u);
+    if (!(this.users[u.userId])) {
+      this.users[u.userId] = u;
     }
+  }
+
+  removeUser(u) {
+    if (Object.keys(this.users).includes(u.userId)) {
+      delete this.users[u.userId];
+    }
+  }
+
+  assignNewRoomOwner() {
+    let foundOwner = null;
+    for (let [id, u] of Object.entries(this.users)) {
+      u.room_owner = false;
+
+      if (!(foundOwner || u.socket.disconnected)) {
+        foundOwner = u;
+        u.room_owner = true;
+      }
+    }
+
+    return foundOwner;
   }
 
   toObject() {
@@ -95,18 +123,28 @@ class Room {
       chat: {
         messages: [],
       },
-      users: [],
+      users: {},
     };
 
     for (let c of this.chat.messages.sort((a, b) => a.time < b.time ? -1 : 1)) {
       to_return.chat.messages.push(c.toObject());
     }
 
-    for (let u of this.users) {
-      to_return.users.push(u.toObject());
+    for (let [key, u] of Object.entries(this.users)) {
+      to_return.users[u.userId] = u.toObject();
     }
 
     return to_return;
+  }
+
+  destroy() {
+    let keys = Object.keys(this.users);
+
+    for (let k of keys) {
+      this.users[k].destroy();
+    }
+
+    delete rooms[this.roomId];
   }
 }
 
@@ -142,8 +180,8 @@ io.on("connection", (socket) => {
 
     setTimeout(() => {
       socket.emit("welcome");
-      socket.to(roomId).emit("user-connected", userId);
-      socket.emit("download-sync-chat", room.toObject());
+      socket.to(roomId).emit("sync-users", room.toObject().users);
+      socket.emit("download-sync-chat", room.toObject().chat);
     }, 250);
 
   });
@@ -154,56 +192,65 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on('request-sync', () => {
+    if (room) {
+      console.log("Requested sync: \n", room.toObject());
+      socket.emit("sync-users", room.toObject().users);
+      socket.emit("download-sync-chat", room.toObject().chat);
+    }
+
+  });
+
+  socket.on("leave-meeting", () => {
+    if (room && user) {
+      if (user.room_owner) {
+        user.destroy();
+        let newOwner = room.assignNewRoomOwner();
+
+        if (newOwner) {
+          console.log(`Transferring room ${this.roomId} ownership to ${newOwner.name}`);
+          newOwner.socket.emit("toast", {
+            text: "The room owner disconnected.  You are the new room owner!",
+            duration: 5000,
+          });
+        } else {
+          room.destroy();
+        }
+      } else {
+        user.destroy();
+      }
+
+      io.in(room.roomId).emit("sync-users", room.toObject().users);
+    }
+  });
+
   socket.on('disconnect', function() {
     console.log("Lost connection, retrying...");
     setTimeout(() => {
-      if (user && socket.disconnected) {
+      if (room && user && socket.disconnected) {
         if (user.room_owner) {
-          console.log("Room owner disconnected.");
-          user.room_owner = false;
+          user.destroy();
+          let newOwner = room.assignNewRoomOwner();
 
-          let should_destroy = true;
-          for (let p of room.users) {
-            if (!(p.socket.disconnected)) {
-              console.log(`Transferring room ${room.roomId} ownership to ${p.name}`);
-              should_destroy = false;
-              p.room_owner = true;
-              p.socket.emit("toast", {
-                text: "The room owner disconnected.  You are the new room owner!",
-                duration: 5000,
-              });
-
-              break;
-            }
-          }
-
-          if (should_destroy) {
-            console.log(`Ending room ${room.roomId}`);
-            io.in(room.roomId).emit("room_destroy");
-
-            delete rooms[room.roomId];
+          if (newOwner) {
+            console.log(`Transferring room ${this.roomId} ownership to ${newOwner.name}`);
+            newOwner.socket.emit("toast", {
+              text: "The room owner disconnected.  You are the new room owner!",
+              duration: 5000,
+            });
           } else {
-            room.users.splice(room.users.indexOf(user), 1);
-            user.socket.disconnect(true);
-            console.log("Emitting user_disconnected for previous room owner.");
-            console.log(user.toObject());
-            io.in(room.roomId).emit("user_disconnected", user.toObject());
+            room.destroy();
           }
-
-
         } else {
-          console.log("Non-owner leaving room");
-          room.users.splice(room.users.indexOf(user), 1);
-          user.socket.disconnect(true);
-          io.in(room.roomId).emit("user_disconnected", user.toObject());
+          user.destroy();
         }
 
-        socket.removeAllListeners();
+        io.in(room.roomId).emit("sync-users", room.toObject().users);
 
       } else {
         console.log("Successfully reconnected!")
       }
-    },10000);
+    },30000);
   });
 
 });
