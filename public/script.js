@@ -197,16 +197,14 @@ let app = new Vue({
       video.addEventListener("loadedmetadata", () => {
         video.play();
 
-        var isTouch = "ontouchstart" in window;
-
-        if(isTouch){
-           video.addEventListener('touchstart', () {
+        if ("ontouchstart" in window) {
+           video.addEventListener('touchstart', () => {
              video.play();
-           }));
-        } else{
-           video.addEventListener('mousedown', () {
+           });
+        } else {
+           video.addEventListener('mousedown', () => {
              video.play();
-           }));
+           });
         }
 
         document.getElementById("video-grid").append(video);
