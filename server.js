@@ -149,7 +149,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-chat", data => {
-    io.in(room.roomId).emit("receive-chat", new ChatMessage(room, data.text, data.name, data.userId).toObject());
+    if (room) {
+      io.in(room.roomId).emit("receive-chat", new ChatMessage(room, data.text, data.name, data.userId).toObject());
+    }
   });
 
   socket.on('disconnect', function() {

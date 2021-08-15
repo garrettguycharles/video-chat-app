@@ -1,5 +1,5 @@
 const myVideo = document.createElement("video");
-// myVideo.muted = true;
+myVideo.muted = true;
 
 let app = new Vue({
   el: "#v-app",
@@ -61,7 +61,6 @@ let app = new Vue({
       this.peer = new Peer(undefined, {
         path: "/peerjs",
         host: "/",
-        port: "3007",
       });
 
       navigator.mediaDevices.getUserMedia({
